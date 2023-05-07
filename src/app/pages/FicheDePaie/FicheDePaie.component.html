@@ -1,0 +1,170 @@
+<div class="p-grid">
+    <div class="p-col-12">
+
+        <p-toast></p-toast>
+
+        <div class="card">
+            <p-toolbar styleClass="p-mb-4">
+                <ng-template pTemplate="left">
+                    <button pButton pRipple label="New" icon="pi pi-plus" class="p-button-success p-mr-2 p-mb-2" (click)="openNew()"></button>
+                </ng-template>
+
+                <ng-template pTemplate="right">
+                    <p-fileUpload mode="basic" accept="image/*" [maxFileSize]="1000000" label="Import" chooseLabel="Import" class="p-mr-2 p-mb-2 p-d-inline-block"></p-fileUpload>
+                    <button pButton pRipple label="Export" icon="pi pi-upload" class="p-button-help p-mb-2" (click)="dt.exportCSV()"></button>
+                </ng-template>
+            </p-toolbar>
+
+            <p-table #dt [value]="fdp" [columns]="cols" [rows]="10" [paginator]="true" [globalFilterFields]="['timeSpent','country.timeSpent']"
+                     [(selection)]="selectedFdp" [rowHover]="true" dataKey="id"
+                     styleClass="p-datatable-customers"
+                     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [showCurrentPageReport]="true">
+                <ng-template pTemplate="caption">
+                    <div class="p-d-flex p-flex-column p-flex-md-row p-jc-md-between table-header">
+                        <h5 class="p-m-0">Manage FDP</h5>
+                        <span class="p-input-icon-left">
+                        <i class="pi pi-search"></i>
+                        <input pInputText type="text" (input)="dt.filterGlobal($event.target, 'contains')" placeholder="Search..." />
+                    </span>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="width: 3rem">
+                            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                        </th>
+                        <th pSortableColumn="timeSpent">Time Spent <p-sortIcon field="timeSpent"></p-sortIcon></th>
+                        <th pSortableColumn="description">Description <p-sortIcon field="description"></p-sortIcon></th>
+                        <th pSortableColumn="date">Date <p-sortIcon field="date"></p-sortIcon></th>
+                        <th pSortableColumn="projectName">Project <p-sortIcon field="projectName"></p-sortIcon></th>
+                        <th></th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-fdpi>
+                    <tr>
+                        <td>
+                            <p-tableCheckbox [value]="fdpi"></p-tableCheckbox>
+                        </td>
+                        <td ><span class="p-column-title"></span>
+                            {{fdpi.timeSpent}}
+                        </td>
+
+                        <td><span class="p-column-title"></span>
+                            {{fdpi.description }}
+                        </td>
+                        <td><span class="p-column-title"></span>
+                            {{fdpi.date}}
+                        </td>
+                      <td><span class="p-column-title"></span>
+                        {{fdpi.projectName}}
+                      </td>
+                      
+                        <td>
+                            <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success p-mr-2" (click)="editFDP(fdpi)"></button>
+                            <button pButton pRipple icon="pi pi-info" class="p-button-rounded p-button-secondary"  (click)="showFDPDialog(fdpi)"></button>
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="summary">
+                    <div class="p-d-flex p-ai-center p-jc-between">
+                        In total there are {{fdp ? fdp.length : 0 }} fdp.
+                    </div>
+                </ng-template>
+            </p-table>
+        </div>
+
+        <p-dialog [(visible)]="fdpDialog" [style]="{width: '450px'}" header="FDP Details" [modal]="true" styleClass="p-fluid">
+            <ng-template pTemplate="content">
+            
+                <div class="p-field">
+                    <label for="timeSpent">Time Spent</label>
+                    <input type="text" pInputText id="timeSpent" [(ngModel)]="fdpi.timeSpent" required autofocus />
+                    <small class="p-invalid" *ngIf="submitted && !fdpi.timeSpent">Time Spent is required.</small>
+                </div>
+                <div class="p-field">
+                    <label for="description">Description</label>
+                    <textarea id="description" pInputTextarea [(ngModel)]="fdpi.description" required rows="3" cols="20"></textarea>
+                </div>
+              <div class="p-field">
+                <label for="date">Date</label>
+                <input type="date" pInputText id="date" [(ngModel)]="fdpi.date" required autofocus />
+              </div>
+
+              <div class="p-field">
+                <label for="projectName">Project</label>
+                <input type="text" pInputText id="projectName" [(ngModel)]="fdpi.projectName" required autofocus />
+            </div>
+
+
+
+
+            </ng-template>
+
+            <ng-template pTemplate="footer">
+                <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+                <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" (click)="saveFdp()"></button>
+            </ng-template>
+        </p-dialog>
+
+
+
+
+        <p-dialog [(visible)]="updateFDPDialog" [style]="{width: '450px'}" header="FDPDetails" [modal]="true" styleClass="p-fluid">
+            <ng-template pTemplate="content">
+              <div class="p-field">
+                <label for="ficheId">Id</label>
+                <input type="text" pInputText id="ficheId" [(ngModel)]="fdpi.ficheId" required  />
+                <small class="p-invalid" *ngIf="submitted && !fdpi.ficheId">Id is required.</small>
+              </div>
+              <div class="p-field">
+                <label for="timeSpent">Time Spent</label>
+                <input type="text" pInputText id="timeSpent" [(ngModel)]="fdpi.timeSpent" required autofocus />
+                <small class="p-invalid" *ngIf="submitted && !fdpi.timeSpent">Time Spent is required.</small>
+              </div>
+              <div class="p-field">
+                <label for="description">Description</label>
+                <textarea id="description" pInputTextarea [(ngModel)]="fdpi.description" required rows="3" cols="20"></textarea>
+              </div>
+              <div class="p-field">
+                <label for="date">Date</label>
+                <input type="date" pInputText id="date" [(ngModel)]="fdpi.date" required autofocus />
+    
+              </div>
+              <div class="p-field">
+                <label for="projectName">Project Name</label>
+                <input type="text" pInputText id="projectName" [(ngModel)]="fdpi.projectName" required autofocus />       
+              </div>
+    
+            </ng-template>
+            <ng-template pTemplate="footer">
+              <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+              <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" (click)="updateData()"></button>
+            </ng-template>
+          </p-dialog>
+
+          <p-dialog [(visible)]="consultFDPDialog" [style]="{width: '450px'}" header="report Details" [modal]="true" styleClass="p-fluid">
+            <div class="report-details">
+             <div class="report-timeSpent">Time Spent : {{selectedFDPShow?.timeSpent}}</div>
+              
+              <div class="report-description">Description : {{selectedFDPShow?.description}}</div>
+              
+             <div class="report-date">Date : {{selectedFDPShow?.date}}</div>
+             
+             <div class="report-projectName">Project : {{selectedFDPShow?.projectName}}</div>
+
+             <div class="report-Responsible">Responsible : {{selectedFDPShow?.idResponsible}}</div>
+
+             <div class="report-productivity">productivity : {{selectedFDPShow?.productivity}}</div>
+
+             <div class="report-comment">comment : {{selectedFDPShow?.comment}}</div>
+
+             <div class="report-approve">approved : {{selectedFDPShow?.approve}}</div>
+             
+              
+            </div>
+          </p-dialog>
+  
+        <p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>
+    </div>
+    
+</div>

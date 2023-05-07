@@ -1,0 +1,27 @@
+
+ 
+    <div class="login-body" >
+    <div class="login-wrapper">
+        <div class="login-panel" >
+            <a [routerLink]="['/']" class="logo">
+                <img src="assets/layout/images/oga.jpeg" alt="freya-layout" />
+            </a>
+
+      
+				  <input type="text" id="username" [(ngModel)]="login.username" name="username" required>
+				
+                  <small class="p-error" *ngIf="submitted && !login.username">Name is required.</small>
+				  <input type="password" id="password" [(ngModel)]="login.password" name="password" required>
+            <button pButton pRipple label="LOGIN" type="button" (click)="onSubmit()"></button>
+            <div *ngIf="errorMessage">Invalid username or password.</div>
+
+
+          
+        </div>
+        <div class="login-footer">
+            <h4>OGA</h4>
+            <h6>Copyright Ⓒ PrimeTek Informatics</h6>
+        </div>
+    </div>
+</div>
+
